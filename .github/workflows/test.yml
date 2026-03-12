@@ -1,0 +1,20 @@
+on: push
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [windows-latest, windows-11-arm]
+        omp: [0, 1]
+        llvm: [0, 1]
+    runs-on: ${{ matrix.os }}
+    continue-on-error: true
+    steps:
+    - uses: actions/checkout@v6
+    - uses: actions/setup-python@v6
+      with:
+        python-version: '3.x'
+    - run: pip install -ve .
+      env:
+        USE_OMP: ${{ matrix.omp }}
+        USE_LLVM: ${{ matrix.llvm }}
+    - run: python test.py
